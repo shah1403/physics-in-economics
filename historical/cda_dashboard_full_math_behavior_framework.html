@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Corrected CDA Simulation Dashboard — Embedded SVG Graphs</title>
+<style>
+:root{--bg:#0b1020;--panel:#11182d;--text:#eef3ff;--muted:#aeb8d0;--accent:#7aa2ff;--good:#45d483;--warn:#ffc857;--bad:#ff6b6b;--border:rgba(255,255,255,.12);--grid:rgba(255,255,255,.11)}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top left,#172652,var(--bg) 44%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:22px 28px;border-bottom:1px solid var(--border);background:rgba(8,12,25,.74);position:sticky;top:0;z-index:5;backdrop-filter:blur(10px)}
+h1{margin:0 0 6px;font-size:24px;letter-spacing:-.02em} header p{margin:0;color:var(--muted);font-size:14px}
+main{display:grid;grid-template-columns:380px 1fr;gap:18px;padding:18px;max-width:1800px;margin:auto}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.controls{position:sticky;top:96px;height:fit-content} h2{font-size:18px;margin:0 0 12px}.section{padding:14px 0;border-top:1px solid var(--border)}.section:first-child{border-top:0;padding-top:0}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
+input,button{width:100%;border:1px solid var(--border);border-radius:12px;background:rgba(0,0,0,.22);color:var(--text);padding:10px 12px;font-size:14px;outline:none}
+input:focus{border-color:rgba(122,162,255,.75);box-shadow:0 0 0 3px rgba(122,162,255,.15)}
+button{cursor:pointer;background:linear-gradient(135deg,#4f7cff,#7aa2ff);border:0;font-weight:800;color:white;margin-top:12px}
+button.secondary{background:rgba(255,255,255,.08);border:1px solid var(--border);color:var(--text)}
+button:disabled,input:disabled{opacity:.45;cursor:not-allowed}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.metric{background:rgba(255,255,255,.055);border:1px solid var(--border);border-radius:16px;padding:13px}.metric .label{color:var(--muted);font-size:12px;margin-bottom:5px}.metric .value{font-size:20px;font-weight:900}
+.hint{color:var(--muted);line-height:1.45;font-size:13px;margin-top:10px}.plot-card{margin:18px 0}
+.graph{width:100%;height:420px;background:rgba(0,0,0,.14);border-radius:14px;border:1px solid rgba(255,255,255,.08);overflow:hidden}
+.graph.small{height:380px}
+.graph svg{width:100%;height:100%;display:block}
+.ratio-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.ratio-chip{flex:1 1 160px;background:rgba(255,255,255,.055);border:1px solid var(--border);border-radius:14px;padding:12px 14px}
+.ratio-chip .rc-ic{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.ratio-chip .rc-ratio{font-size:26px;font-weight:900;line-height:1}
+.ratio-chip .rc-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.ratio-chip.bias-pos .rc-ratio{color:#ff7ab6}
+.ratio-chip.bias-neg .rc-ratio{color:#45d483}
+.ratio-chip.bias-zero .rc-ratio{color:var(--accent)}
+.axis text{fill:#ffffff;font-size:12px}.axis line,.axis path{stroke:rgba(255,255,255,.28)}.gridline{stroke:var(--grid);stroke-width:1}.chart-title{fill:var(--text);font-size:14px;font-weight:700}.legend text{fill:var(--text);font-size:12px}.axis-label{fill:#c8d8ff;font-size:13px;font-weight:600}.tooltip{position:fixed;pointer-events:none;background:#070b16;border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:10px;font-size:12px;display:none;z-index:1000;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+table{width:100%;border-collapse:collapse;font-size:12px} th,td{padding:9px 8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}th{color:#dfe7ff;background:rgba(255,255,255,.08);position:sticky;top:0}.table-wrap{overflow:auto;max-height:560px;border:1px solid var(--border);border-radius:14px}
+.progress-shell{height:12px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.10);margin-top:12px}.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#45d483,#7aa2ff);transition:width .2s ease}
+.overlay{display:none;position:fixed;inset:0;background:rgba(2,4,12,.55);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(3px)}.overlay.active{display:flex}.modal{max-width:460px;padding:22px;border-radius:20px;background:var(--panel);border:1px solid var(--border);box-shadow:0 25px 80px rgba(0,0,0,.45);text-align:center}.spinner{width:46px;height:46px;margin:0 auto 14px;border:4px solid rgba(255,255,255,.15);border-top-color:var(--accent);border-radius:999px;animation:spin .9s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.check{display:grid;grid-template-columns:20px 1fr;align-items:center;gap:8px;margin:8px 0;color:var(--muted);font-size:13px}.check input{width:auto;margin:0}
+
+.explain-card{margin:18px 0}
+.explain-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.explain-box{background:rgba(255,255,255,.045);border:1px solid var(--border);border-radius:16px;padding:14px}
+.explain-box h3{font-size:15px;margin:0 0 8px;color:#dfe7ff}
+.explain-box p,.explain-box li{color:var(--muted);font-size:13px;line-height:1.55}
+.explain-box ul{margin:8px 0 0 18px;padding:0}
+.mathline{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#eef3ff;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:12px;overflow:auto}
+.note-good{border-left:3px solid var(--good);padding-left:10px}
+.note-warn{border-left:3px solid var(--warn);padding-left:10px}
+@media(max-width:1050px){.explain-grid{grid-template-columns:1fr}}
+@media(max-width:1050px){main{grid-template-columns:1fr}.controls{position:relative;top:0}}
+
+text.axis{fill:#ffffff!important;font-size:12px}
+.axis-label{fill:#ffffff!important}
+.chart-title{fill:#ffffff}
+
+
+.framework-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.framework-pill{background:rgba(122,162,255,.08);border:1px solid rgba(122,162,255,.22);border-radius:12px;padding:10px;color:var(--muted);font-size:12px;line-height:1.45}
+.legit-box{background:rgba(69,212,131,.07);border:1px solid rgba(69,212,131,.22);border-radius:14px;padding:12px;margin-top:10px}
+.legit-box b{color:#dfffea}
+@media(max-width:1050px){.framework-list{grid-template-columns:1fr}}
+
+
+.novel-tag{display:inline-block;background:rgba(255,200,87,.12);border:1px solid rgba(255,200,87,.35);color:#ffe3a3;border-radius:999px;padding:4px 9px;font-size:11px;font-weight:700;margin-bottom:8px}
+.math-note{color:#cfd8f6;font-size:12px;line-height:1.45;margin-top:6px}
+
+</style>
+</head>
+<body>
+<header>
+<h1>Corrected CDA Simulation Dashboard</h1>
+<p>Single-file browser app. Graphs are embedded SVG elements, not image files. Includes full economic methodology, no-P* leakage notes, and residual diagnostics.</p>
+</header>
+
+<div class="tooltip" id="tooltip"></div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="spinner"></div>
+    <h2>Simulations running</h2>
+    <p class="hint">Controls are frozen until all CDA runs finish.</p>
+    <div class="progress-shell"><div class="progress-bar" id="modalProgress"></div></div>
+    <p class="hint" id="modalStatus">Starting...</p>
+  </div>
+</div>
+
+<main>
+<aside class="card controls">
+  <div class="section">
+    <h2>Market curves</h2>
+    <div class="hint">Demand: <b>P<sub>D</sub>(Q)=a-bQ</b><br>Supply: <b>P<sub>S</sub>(Q)=c+dQ</b></div>
+    <div class="grid2">
+      <div><label>a</label><input id="a" type="number" step="0.1" value="4.00"></div>
+      <div><label>b</label><input id="b" type="number" step="0.00001" value="0.00048"></div>
+      <div><label>c</label><input id="c" type="number" step="0.1" value="0.20"></div>
+      <div><label>d</label><input id="d" type="number" step="0.00001" value="0.00032"></div>
+    </div>
+    <button class="secondary" id="presetOriginal">Preset: original</button>
+    <button class="secondary" id="presetFlatSupply">Preset: flat supply</button>
+    <button class="secondary" id="presetFlatDemand">Preset: flat demand</button>
+  </div>
+
+  <div class="section">
+    <h2>Simulation settings</h2>
+    <div class="grid2">
+      <div><label>N buyers/sellers</label><input id="N" type="number" step="500" value="5000"></div>
+      <div><label>Max events</label><input id="maxEvents" type="number" step="5000" value="70000"></div>
+      <div><label>delta0</label><input id="delta0" type="number" step="0.0025" value="0.01"></div>
+      <div><label>MA window</label><input id="maWindow" type="number" step="10" value="100"></div>
+      <div><label>Spread threshold</label><input id="spreadThreshold" type="number" step="0.01" value="0.08"></div>
+      <div><label>Burn-in contracts</label><input id="burnIn" type="number" step="50" value="250"></div>
+      <div><label>Book sample until</label><input id="sampleUntil" type="number" step="1000" value="20000"></div>
+      <div><label>Book sample every</label><input id="sampleEvery" type="number" step="1" value="10"></div>
+      <div><label>Monte Carlo runs / IC</label><input id="mcRuns" type="number" step="1" value="75" min="1"></div>
+    </div>
+    <div style="margin-top:12px">
+      <label class="check" style="margin:0 0 8px"><input type="checkbox" id="fixedSeed" style="width:auto;margin:0"><span>Fixed seed (reproducible)</span></label>
+      <div id="seedRow" style="display:none"><label>Seed</label><input id="seedVal" type="number" step="1" value="1000"></div>
+      <p class="hint" style="margin-top:6px" id="seedHint">Each run uses a fresh random seed.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Initial conditions</h2>
+    <div id="icBoxes"></div>
+  </div>
+
+  <div class="section">
+    <button id="runBtn">Run full CDA tests</button>
+    <button class="secondary" id="downloadBtn" disabled>Download JSON results</button>
+    <div class="progress-shell"><div class="progress-bar" id="progress"></div></div>
+    <p class="hint" id="status">Ready.</p>
+  </div>
+</aside>
+
+<section>
+  <div class="grid3">
+    <div class="metric"><div class="label">P*</div><div class="value" id="pStar">—</div></div>
+    <div class="metric"><div class="label">Q*</div><div class="value" id="qStar">—</div></div>
+    <div class="metric"><div class="label">Q*/N</div><div class="value" id="qRatio">—</div></div>
+  </div>
+
+
+  
+  
+  <div class="card explain-card">
+    <h2>Purpose, economic framework, and methodology</h2>
+    <div class="explain-grid">
+
+      <div class="explain-box">
+        <h3>1. What this experiment is testing</h3>
+        <p>
+          This dashboard simulates a corrected Continuous Double Auction (CDA) and tests whether the
+          realized market price path converges toward the competitive equilibrium implied by the chosen
+          supply and demand curves. The market is not centrally cleared. Prices emerge from bilateral
+          sequential trades through an order book.
+        </p>
+        <p>
+          The behavioral aggressiveness/frustration state <b>s_i</b> is a novel construction added to
+          mimic human impatience, adaptation, and changing willingness to trade after failed attempts.
+        </p>
+        <div class="mathline">Demand: P_D(Q) = a − bQ<br>Supply: P_S(Q) = c + dQ</div>
+        <div class="mathline">Q* = (a − c) / (b + d)<br>P* = c + dQ*</div>
+        <p>
+          The main question is: when agents trade through a decentralized CDA institution, do realized
+          prices cluster near P*, and does the aggregate convergence resemble a simple exponential
+          approach?
+        </p>
+      </div>
+
+      <div class="explain-box">
+        <h3>2. Economic environment</h3>
+        <p>
+          The simulation creates <b>N buyers</b> and <b>N sellers</b>. Buyer values and seller costs come
+          directly from the chosen supply and demand curves:
+        </p>
+        <div class="mathline">v_i = a − b(i + 0.5)<br>cost_j = c + d(j + 0.5)</div>
+        <p>Buyer and seller surplus are:</p>
+        <div class="mathline">Buyer surplus = v_i − p<br>Seller surplus = p − cost_j</div>
+        <p>
+          The dashboard checks for negative-surplus violations. A clean CDA run should not force buyers
+          to pay above value or sellers to sell below cost.
+        </p>
+      </div>
+
+      <div class="explain-box">
+        <h3>3. Trader state variables and novel behavioral construction</h3>
+        <span class="novel-tag">Novel behavioral layer</span>
+        <p>
+          The CDA institution is standard, but this dashboard adds a novel behavioral layer to mimic
+          human-like frustration, impatience, and aggressiveness. Each active trader carries an internal
+          state variable:
+        </p>
+        <div class="mathline">s_i ≥ 1</div>
+        <p>
+          <b>s_i</b> is a frustration/aggressiveness parameter. A trader with higher <b>s_i</b> is more
+          willing to improve quotes and more likely to accept a favorable standing quote.
+        </p>
+        <div class="framework-list">
+          <div class="framework-pill"><b>Buyer value vᵢ</b><br>Maximum price buyer i can rationally pay.</div>
+          <div class="framework-pill"><b>Seller cost cⱼ</b><br>Minimum price seller j can rationally accept.</div>
+          <div class="framework-pill"><b>Buyer state sᵇᵢ</b><br>Buyer frustration/aggressiveness multiplier.</div>
+          <div class="framework-pill"><b>Seller state sˢⱼ</b><br>Seller frustration/aggressiveness multiplier.</div>
+        </div>
+        <p>
+          This is not a textbook CDA assumption. It is a deliberate modeling choice to represent how
+          human traders may become more impatient after not getting a trade.
+        </p>
+      </div>
+
+      <div class="explain-box">
+        <h3>4. Frustration/aggressiveness update rule</h3>
+        <span class="novel-tag">Human-behavior proxy</span>
+        <p>
+          In the implemented simulation, <b>s_i</b> increases when a trader attempts to act but cannot
+          improve the current best quote. That condition represents an unsuccessful attempt to move the
+          market.
+        </p>
+        <div class="mathline">s_i ← min(s_max, s_i · 1.5^(1/5))</div>
+        <p>In the dashboard code:</p>
+        <div class="mathline">s_max = 4<br>step multiplier = 1.5^(1/5)</div>
+        <p>
+          The cap keeps behavior bounded. The idea is not to make traders irrational; it is to make their
+          quote-improvement intensity adapt after friction.
+        </p>
+        <p class="math-note">
+          Earlier versions of the model explored a rejection-counter form:
+          s(n+1)=s(n)·1.5^(k/5), where k is a failed-attempt count. The dashboard uses the simpler
+          event-based form above: a failed quote-improvement attempt multiplies s_i by 1.5^(1/5).
+        </p>
+      </div>
+
+      <div class="explain-box">
+        <h3>5. Quote-posting rules</h3>
+        <p>
+          If there is no standing quote, agents begin from initialized proportional quotes:
+        </p>
+        <div class="mathline">Initial buyer bid: B_i = α_b v_i<br>Initial seller ask: A_j = α_s cost_j</div>
+        <p>
+          Once the book exists, buyers improve the best bid upward and sellers improve the best ask
+          downward. The behavioral state <b>s_i</b> controls the step size:
+        </p>
+        <div class="mathline">new bid = best bid + δ₀sᵇᵢ<br>new ask = best ask − δ₀sˢⱼ</div>
+        <p>Rationality constraints are enforced:</p>
+        <div class="mathline">bid ≤ v_i<br>ask ≥ cost_j</div>
+      </div>
+
+      <div class="explain-box">
+        <h3>6. Acceptance probability functions</h3>
+        <p>
+          The probability functions use only the current quote, private value/cost, and the trader's
+          internal aggressiveness state <b>s_i</b>. They do not use P*.
+        </p>
+        <p><b>Buyer accepts best ask A* if A* ≤ vᵢ:</b></p>
+        <div class="mathline">Pr(buyer accepts A*) = min(1, sᵇᵢ · max(0, 1 − A*/v_i))</div>
+        <p><b>Seller accepts best bid B* if B* ≥ costⱼ:</b></p>
+        <div class="mathline">Pr(seller accepts B*) = min(1, sˢⱼ · max(0, 1 − cost_j/B*))</div>
+        <p>
+          These functions are bounded in [0,1]. Higher <b>s_i</b> makes a trader more likely to accept a
+          profitable standing quote.
+        </p>
+      </div>
+
+      <div class="explain-box">
+        <h3>7. CDA institution and trade execution</h3>
+        <ul>
+          <li>A random active buyer or seller is selected each event.</li>
+          <li>A buyer may accept the best ask or post/improve a bid.</li>
+          <li>A seller may accept the best bid or post/improve an ask.</li>
+          <li>If a buyer's bid crosses the best ask, trade executes at the standing ask.</li>
+          <li>If a seller's ask crosses the best bid, trade executes at the standing bid.</li>
+          <li>After a trade, the matched buyer and seller leave the market.</li>
+        </ul>
+        <p class="note-good">
+          The trade occurs at an actual standing quote. It is not a Walrasian clearing price and not an
+          implied theoretical price.
+        </p>
+      </div>
+
+      <div class="explain-box">
+        <h3>8. No P* leakage</h3>
+        <p>
+          The simulation is designed so P* does not leak into agent behavior. Traders do not see P*,
+          Q*, β, the ODE curve, residuals, or future prices.
+        </p>
+        <div class="legit-box">
+          <p><b>Agents use:</b> private value/cost, current best bid, current best ask, quote tick δ₀,
+          random activation, and their own behavioral state s_i.</p>
+          <p><b>Agents do not use:</b> P*, Q*, fitted β, the ODE curve, future prices, residual diagnostics,
+          or the aggregate supply/demand solution.</p>
+        </div>
+        <p>
+          Even <b>s_i</b> updates only from local trading conditions. It is not nudged toward P*. That
+          makes convergence a genuine emergent result of the CDA mechanism plus adaptive behavior.
+        </p>
+      </div>
+
+      <div class="explain-box">
+        <h3>9. Why this is economically legitimate</h3>
+        <p>
+          A CDA is a decentralized market institution: prices are produced by sequential buyer-seller
+          interactions, not by a central auctioneer. P* is still useful as a competitive benchmark
+          because it is where aggregate supply and demand balance.
+        </p>
+        <ul>
+          <li><b>Market mechanism:</b> decentralized CDA trading.</li>
+          <li><b>Agent information:</b> local private and order-book information only.</li>
+          <li><b>Behavioral layer:</b> novel bounded frustration/aggressiveness state s_i.</li>
+          <li><b>Evaluation benchmark:</b> P* and Q* computed after the fact.</li>
+        </ul>
+      </div>
+
+      <div class="explain-box">
+        <h3>10. Order-book formation</h3>
+        <p>
+          The early part of a CDA run is book formation. The dashboard detects formation using only the
+          live spread:
+        </p>
+        <div class="mathline">Spread_t = BestAsk_t − BestBid_t</div>
+        <p>
+          Once the rolling median spread falls below the chosen threshold and the burn-in condition is
+          satisfied, the dashboard treats the order book as formed.
+        </p>
+        <p class="note-good">
+          This formation rule avoids P* leakage because it uses only observable book state.
+        </p>
+      </div>
+
+      <div class="explain-box">
+        <h3>11. ODE convergence envelope</h3>
+        <p>
+          After book formation, the dashboard fits a one-parameter exponential convergence envelope to
+          the moving-average price path:
+        </p>
+        <div class="mathline">P(k) = P* + (P₀ − P*) exp(−(k − k₀)/β)</div>
+        <p>
+          β is the only free parameter. The fit asks whether CDA prices broadly behave like a drag-style
+          convergence process, not whether every individual contract price is exactly exponential.
+        </p>
+      </div>
+
+      <div class="explain-box">
+        <h3>12. Why R² may be low or negative</h3>
+        <p class="note-warn">
+          R² is expected to be low, unstable, or even negative in some runs. The CDA path is stochastic
+          and sequential, while the ODE fit has only one free parameter, β.
+        </p>
+        <p>
+          If the market is already near equilibrium after formation, there may be little directional
+          variation left for the exponential curve to explain.
+        </p>
+      </div>
+
+      <div class="explain-box">
+        <h3>13. Residual analysis</h3>
+        <p>The residual is:</p>
+        <div class="mathline">e(k) = P_obs,MA(k) − P_ODE(k)</div>
+        <ul>
+          <li><b>MSE:</b> average squared residual.</li>
+          <li><b>RMSE:</b> residual size in price units.</li>
+          <li><b>MAE:</b> average absolute residual.</li>
+          <li><b>Signed integral:</b> ∫e(k)dk, where positive and negative regions cancel.</li>
+          <li><b>Absolute area:</b> ∫|e(k)|dk, the total residual magnitude.</li>
+        </ul>
+        <p>
+          If signed residuals roughly cancel relative to absolute area, the residuals look more like
+          balanced practical noise around the envelope rather than a one-sided structural miss.
+        </p>
+      </div>
+
+      <div class="explain-box">
+        <h3>14. What matters most</h3>
+        <ul>
+          <li><b>Final P* deviation:</b> do realized prices cluster near competitive equilibrium?</li>
+          <li><b>β:</b> how quickly does the convergence envelope approach P*?</li>
+          <li><b>MSE/RMSE:</b> how large are deviations in price units?</li>
+          <li><b>Signed integral / absolute area:</b> are residuals balanced or biased?</li>
+          <li><b>Monte Carlo stability:</b> do results survive repeated random runs?</li>
+        </ul>
+      </div>
+
+      <div class="explain-box">
+        <h3>15. Why AC(1) / AR(1) is not used here</h3>
+        <p>
+          Tick-to-tick autocorrelation is not the right main metric because CDA prices are sequential,
+          discrete, and path-dependent by construction. A high short-run autocorrelation can simply
+          reflect market microstructure persistence rather than failure of convergence.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+<div class="card plot-card"><h2>Supply and demand preview</h2><div id="curveGraph" class="graph small"></div></div>
+  <div class="card plot-card"><h2>CDA moving averages + post-formation ODE fits</h2><div id="maGraph" class="graph"></div></div>
+  <div class="card plot-card"><h2>Order-book formation: sampled spread</h2><div id="spreadGraph" class="graph small"></div></div>
+  <div class="card plot-card"><h2>Residual plots</h2><p class="hint">Residuals are calculated as observed moving-average price minus fitted ODE envelope. The goal is not high R²; the goal is convergence with small, balanced residuals.</p><div id="residGraph" class="graph small"></div></div>
+  <div class="card plot-card"><h2>Cumulative signed residual integral</h2><div id="intGraph" class="graph small"></div><div id="ratioPanel" class="ratio-row"></div></div>
+
+  <div class="card">
+    <h2>Full diagnostics table</h2>
+    <div class="table-wrap"><table id="resultsTable"><thead></thead><tbody></tbody></table></div>
+  </div>
+</section>
+</main>
+
+<script>
+"use strict";
+
+const IC_DEFAULTS = {
+  extreme_shortage: [0.20, 1.02],
+  shortage: [0.50, 1.05],
+  mid_mixed: [0.75, 1.25],
+  surplus: [0.95, 1.50],
+  extreme_surplus: [1.00, 5.00]
+};
+
+const COLORS = {
+  extreme_shortage:"#7aa2ff", shortage:"#45d483", mid_mixed:"#ffc857", surplus:"#ff7ab6", extreme_surplus:"#ff8f45",
+  demand:"#7aa2ff", supply:"#45d483", ode:"#d4d4d8", pstar:"#f7f7ff", warn:"#ffc857",
+  grid:"rgba(255,255,255,.12)", text:"#eef3ff", muted:"#aeb8d0"
+};
+
+let latestResults = null;
+let running = false;
+let latestProcessed = null;
+let latestParams = null;
+
+const $ = id => document.getElementById(id);
+const val = id => Number($(id).value);
+function fmt(x,n=4){ if(!Number.isFinite(x)) return "NaN"; if(Math.abs(x)>=1000) return x.toFixed(1); return x.toFixed(n); }
+function mean(a){ if(!a.length) return NaN; let s=0; for(const v of a) s+=v; return s/a.length; }
+function sum(a){ let s=0; for(const v of a) s+=v; return s; }
+function trapz(y,x){ let s=0; for(let i=1;i<y.length;i++) s+=0.5*(y[i]+y[i-1])*(x[i]-x[i-1]); return s; }
+function arrMax(a,init=-Infinity){ let m=init; for(let i=0;i<a.length;i++) if(Number.isFinite(a[i])&&a[i]>m) m=a[i]; return m; }
+function arrMin(a,init=Infinity){ let m=init; for(let i=0;i<a.length;i++) if(Number.isFinite(a[i])&&a[i]<m) m=a[i]; return m; }
+function arrAbsMax(a,init=0){ let m=init; for(let i=0;i<a.length;i++){const v=Math.abs(a[i]); if(Number.isFinite(v)&&v>m) m=v;} return m; }
+function absTrapz(y,x){ let s=0; for(let i=1;i<y.length;i++) s+=0.5*(Math.abs(y[i])+Math.abs(y[i-1]))*(x[i]-x[i-1]); return s; }
+
+function freezeUI(on){
+  running = on;
+  document.querySelectorAll("input,button").forEach(node => {
+    if(node.id==="downloadBtn" && latestResults && !on) node.disabled=false;
+    else node.disabled=on;
+  });
+  $("overlay").classList.toggle("active",on);
+}
+function setProgress(frac,text){
+  const pct = Math.max(0,Math.min(100,frac*100));
+  $("progress").style.width = pct+"%";
+  $("modalProgress").style.width = pct+"%";
+  $("status").textContent = text || "";
+  $("modalStatus").textContent = text || "";
+}
+
+function setupICBoxes(){
+  const box=$("icBoxes"); box.innerHTML="";
+  for(const [name,pair] of Object.entries(IC_DEFAULTS)){
+    const lab=document.createElement("label"); lab.className="check";
+    lab.innerHTML=`<input type="checkbox" class="icCheck" value="${name}" checked><span>${name}: αb=${pair[0]}, αs=${pair[1]}</span>`;
+    box.appendChild(lab);
+  }
+}
+
+function equilibrium(a,b,c,d){
+  if(b+d<=0) return [NaN,NaN];
+  return [c + d*(a-c)/(b+d), (a-c)/(b+d)];
+}
+function buildMarket(a,b,c,d,N){
+  const values=new Float64Array(N), costs=new Float64Array(N);
+  for(let i=0;i<N;i++){ const q=i+0.5; values[i]=a-b*q; costs[i]=c+d*q; }
+  return {values,costs};
+}
+function makeRng(seed){
+  let t=seed>>>0;
+  return function(){ t+=0x6D2B79F5; let x=t; x=Math.imul(x^(x>>>15),x|1); x^=x+Math.imul(x^(x>>>7),x|61); return ((x^(x>>>14))>>>0)/4294967296; };
+}
+
+class Heap{
+  constructor(compare){this.data=[];this.compare=compare}
+  push(item){const a=this.data;a.push(item);let i=a.length-1;while(i>0){const p=(i-1)>>1;if(this.compare(a[p],a[i])<=0)break;[a[p],a[i]]=[a[i],a[p]];i=p}}
+  pop(){const a=this.data;if(!a.length)return;const top=a[0],last=a.pop();if(a.length){a[0]=last;let i=0;while(true){let l=i*2+1,r=l+1,s=i;if(l<a.length&&this.compare(a[l],a[s])<0)s=l;if(r<a.length&&this.compare(a[r],a[s])<0)s=r;if(s===i)break;[a[i],a[s]]=[a[s],a[i]];i=s}}return top}
+  peek(){return this.data[0]} get length(){return this.data.length}
+}
+
+function movingAverage(arr,w){
+  if(arr.length<w) return {x:[],y:[]};
+  const x=[],y=[]; let s=0;
+  for(let i=0;i<arr.length;i++){ s+=arr[i]; if(i>=w)s-=arr[i-w]; if(i>=w-1){x.push(i); y.push(s/w)}}
+  return {x,y};
+}
+/* removed autocorrelation/removed autocorrelation analysis intentionally removed: tick-to-tick autocorrelation is not the right metric for this experiment. */
+function r2Score(y,pred){ const ym=mean(y); let sr=0,st=0; for(let i=0;i<y.length;i++){sr+=(y[i]-pred[i])**2; st+=(y[i]-ym)**2} return st>0?1-sr/st:NaN; }
+
+function fitBetaGrid(x,y,pStar){
+  if(x.length<20) return null;
+  const x0=x[0], p0=y[0];
+  function sse(beta){let v=0; for(let i=0;i<y.length;i++){const p=pStar+(p0-pStar)*Math.exp(-(x[i]-x0)/beta); const e=y[i]-p; v+=e*e} return v}
+  let bestB=1,bestV=Infinity;
+  for(let k=0;k<=220;k++){const beta=Math.exp(k*Math.log(30000)/220); const v=sse(beta); if(v<bestV){bestV=v;bestB=beta}}
+  let lo=Math.max(1e-6,bestB/2.5), hi=Math.min(30000,bestB*2.5), gr=(Math.sqrt(5)-1)/2;
+  let c=hi-gr*(hi-lo), d=lo+gr*(hi-lo), fc=sse(c), fd=sse(d);
+  for(let i=0;i<80;i++){ if(fc<fd){hi=d;d=c;fd=fc;c=hi-gr*(hi-lo);fc=sse(c)} else {lo=c;c=d;fc=fd;d=lo+gr*(hi-lo);fd=sse(d)}}
+  const beta=(lo+hi)/2;
+  const pred=y.map((_,i)=>pStar+(p0-pStar)*Math.exp(-(x[i]-x0)/beta));
+  const resid=y.map((v,i)=>v-pred[i]);
+  const mse=mean(resid.map(v=>v*v)), rmse=Math.sqrt(mse), mae=mean(resid.map(Math.abs));
+  return {beta,pred,resid,mse,rmse,mae,r2:r2Score(y,pred),signedIntegral:trapz(resid,x),absArea:absTrapz(resid,x),p0Post:p0,x0};
+}
+function detectFormation(bookEvents,spreads,contractsLen,threshold,burnIn,maWindow){
+  const pairs=[]; for(let i=0;i<spreads.length;i++) if(Number.isFinite(spreads[i])) pairs.push([bookEvents[i],spreads[i]]);
+  if(pairs.length>=40){ const w=30; for(let i=0;i<=pairs.length-w;i++){const arr=pairs.slice(i,i+w).map(p=>p[1]).sort((a,b)=>a-b); const med=arr[Math.floor(w/2)]; if(med<threshold){const fe=pairs[i+w-1][0]; let idx=Math.max(burnIn,Math.min(1200,Math.floor(fe/3.5))); idx=Math.min(idx,Math.max(0,contractsLen-maWindow-10)); return {formationIdx:idx,formationEvent:fe}}}}
+  return {formationIdx:Math.min(500,Math.max(0,contractsLen-maWindow-10)),formationEvent:null};
+}
+
+async function runCDA(params,icName,alphaB,alphaS,seed,progress){
+  const {values,costs,pStar,qStar,N,maxEvents,delta0,sampleUntil,sampleEvery}=params;
+  const rng=makeRng(seed);
+  const activeB=new Uint8Array(N); activeB.fill(1); const activeS=new Uint8Array(N); activeS.fill(1);
+  const bIds=[],sIds=[]; const bPos=new Int32Array(N),sPos=new Int32Array(N);
+  for(let i=0;i<N;i++){bIds[i]=i;sIds[i]=i;bPos[i]=i;sPos[i]=i}
+  const bids=new Float64Array(N); bids.fill(-Infinity); const asks=new Float64Array(N); asks.fill(Infinity);
+  const sB=new Float64Array(N); sB.fill(1); const sS=new Float64Array(N); sS.fill(1);
+  const bidHeap=new Heap((a,b)=>a[0]-b[0]), askHeap=new Heap((a,b)=>a[0]-b[0]);
+  const contracts=[], contractEvents=[], tradeKinds=[], buyerValuesTraded=[], sellerCostsTraded=[], bookEvents=[], bestBidSamples=[], bestAskSamples=[], spreads=[];
+  let crossedBookViolations=0, noTradeCounter=0; const stepMult=Math.pow(1.5,1/5);
+
+  function removeBuyer(i){if(!activeB[i])return;activeB[i]=0;const pos=bPos[i],last=bIds[bIds.length-1];bIds[pos]=last;bPos[last]=pos;bIds.pop();bids[i]=-Infinity}
+  function removeSeller(j){if(!activeS[j])return;activeS[j]=0;const pos=sPos[j],last=sIds[sIds.length-1];sIds[pos]=last;sPos[last]=pos;sIds.pop();asks[j]=Infinity}
+  function bestBid(){while(bidHeap.length){const [negp,i]=bidHeap.peek(),p=-negp;if(activeB[i]&&Number.isFinite(bids[i])&&Math.abs(bids[i]-p)<1e-12)return[p,i];bidHeap.pop()}return[null,null]}
+  function bestAsk(){while(askHeap.length){const [p,j]=askHeap.peek();if(activeS[j]&&Number.isFinite(asks[j])&&Math.abs(asks[j]-p)<1e-12)return[p,j];askHeap.pop()}return[null,null]}
+  function postBid(i,p){bids[i]=p;bidHeap.push([-p,i])} function postAsk(j,p){asks[j]=p;askHeap.push([p,j])}
+  function sampleBook(event){if(event%sampleEvery!==0||event>sampleUntil)return;const [bb]=bestBid(),[aa]=bestAsk();if(bb!==null&&aa!==null){if(bb>=aa+1e-10)crossedBookViolations++;bookEvents.push(event);bestBidSamples.push(bb);bestAskSamples.push(aa);spreads.push(aa-bb)}}
+  function executeAtAsk(buyerI,event,kind){const [aa,sellerJ]=bestAsk();if(aa===null)return false;contracts.push(aa);contractEvents.push(event);tradeKinds.push(kind);buyerValuesTraded.push(values[buyerI]);sellerCostsTraded.push(costs[sellerJ]);removeBuyer(buyerI);removeSeller(sellerJ);return true}
+  function executeAtBid(sellerJ,event,kind){const [bb,buyerI]=bestBid();if(bb===null)return false;contracts.push(bb);contractEvents.push(event);tradeKinds.push(kind);buyerValuesTraded.push(values[buyerI]);sellerCostsTraded.push(costs[sellerJ]);removeSeller(sellerJ);removeBuyer(buyerI);return true}
+
+  for(let event=0;event<maxEvents;event++){
+    if(!bIds.length||!sIds.length)break;
+    if(Number.isFinite(qStar)&&qStar>0&&contracts.length>Math.floor(.90*qStar)&&noTradeCounter>20000)break;
+    let traded=false;
+    if(rng()<.5){
+      const i=bIds[Math.floor(rng()*bIds.length)];
+      let [aa]=bestAsk();
+      if(aa!==null&&aa<=values[i]){const pAcc=Math.min(1,sB[i]*Math.max(0,1-aa/Math.max(values[i],1e-12))); if(rng()<pAcc)traded=executeAtAsk(i,event,"buyer_accepts_ask")}
+      if(!traded){let [bb]=bestBid(); let newBid=(bb===null)?alphaB*values[i]:bb+delta0*sB[i]; newBid=Math.min(newBid,values[i]); [aa]=bestAsk(); if(aa!==null&&newBid>=aa&&aa<=values[i]) traded=executeAtAsk(i,event,"buyer_crosses_ask"); else { [bb]=bestBid(); if(bb===null||newBid>bb)postBid(i,newBid); else sB[i]=Math.min(4,sB[i]*stepMult)}}
+    } else {
+      const j=sIds[Math.floor(rng()*sIds.length)];
+      let [bb]=bestBid();
+      if(bb!==null&&bb>=costs[j]){const pAcc=Math.min(1,sS[j]*Math.max(0,1-costs[j]/Math.max(bb,1e-12))); if(rng()<pAcc)traded=executeAtBid(j,event,"seller_accepts_bid")}
+      if(!traded){let [aa]=bestAsk(); let newAsk=(aa===null)?alphaS*costs[j]:aa-delta0*sS[j]; newAsk=Math.max(newAsk,costs[j]); [bb]=bestBid(); if(bb!==null&&newAsk<=bb&&bb>=costs[j]) traded=executeAtBid(j,event,"seller_crosses_bid"); else { [aa]=bestAsk(); if(aa===null||newAsk<aa)postAsk(j,newAsk); else sS[j]=Math.min(4,sS[j]*stepMult)}}
+    }
+    noTradeCounter=traded?0:noTradeCounter+1; sampleBook(event);
+    if(event%2500===0){progress?.(event/maxEvents,`${icName}: event ${event.toLocaleString()}, contracts ${contracts.length.toLocaleString()}`); await new Promise(requestAnimationFrame)}
+  }
+  let neg=0; for(let i=0;i<contracts.length;i++){if(contracts[i]>buyerValuesTraded[i]+1e-10)neg++; if(contracts[i]<sellerCostsTraded[i]-1e-10)neg++}
+  return {icName,alphaB,alphaS,seed,contracts,contractEvents,tradeKinds,buyerValuesTraded,sellerCostsTraded,bookEvents,bestBidSamples,bestAskSamples,spreads,crossedBookViolations,negativeSurplusViolations:neg,remainingBuyers:bIds.length,remainingSellers:sIds.length};
+}
+
+function postProcess(result,params){
+  const ma=movingAverage(result.contracts,params.maWindow);
+  const form=detectFormation(result.bookEvents,result.spreads,result.contracts.length,params.spreadThreshold,params.burnIn,params.maWindow);
+  const start=ma.x.findIndex(v=>v>=form.formationIdx);
+  let fit=null;
+  if(start>=0){const x=ma.x.slice(start), y=ma.y.slice(start); fit=fitBetaGrid(x,y,params.pStar); if(fit){fit.x=x;fit.y=y;fit.formationIdx=form.formationIdx;fit.formationEvent=form.formationEvent}}
+  const kinds={}; for(const k of result.tradeKinds)kinds[k]=(kinds[k]||0)+1;
+  const n=result.contracts.length,last500=mean(result.contracts.slice(Math.max(0,n-500)));
+  return {...result,ma,fit,kinds,stats:{
+    IC:result.icName, alpha_b:result.alphaB, alpha_s:result.alphaS, contracts:n, contracts_Qstar_ratio:n/params.qStar,
+    remaining_buyers:result.remainingBuyers, remaining_sellers:result.remainingSellers,
+    crossed_book_violations:result.crossedBookViolations, negative_surplus_violations:result.negativeSurplusViolations,
+    mean_first_100:mean(result.contracts.slice(0,100)), mean_last_100:mean(result.contracts.slice(Math.max(0,n-100))), mean_last_500:last500,
+    pstar_deviation_last_500:last500-params.pStar, price_ratio_last_500:last500/params.pStar,
+    formation_contract:fit?fit.formationIdx:NaN, formation_event:fit?fit.formationEvent:NaN, formation_ratio:fit?fit.formationIdx/n:NaN,
+    beta:fit?fit.beta:NaN, r2:fit?fit.r2:NaN, mse:fit?fit.mse:NaN, rmse:fit?fit.rmse:NaN, mae:fit?fit.mae:NaN,
+    signed_integral:fit?fit.signedIntegral:NaN, absolute_area_residuals:fit?fit.absArea:NaN, signed_sum_residuals:fit?sum(fit.resid):NaN,
+    mean_residual_from_integral:fit?fit.signedIntegral/(fit.x[fit.x.length-1]-fit.x[0]):NaN,
+    buyer_accepts_ask:kinds.buyer_accepts_ask||0, buyer_crosses_ask:kinds.buyer_crosses_ask||0, seller_accepts_bid:kinds.seller_accepts_bid||0, seller_crosses_bid:kinds.seller_crosses_bid||0
+  }};
+}
+
+function getSelectedICs(){return Array.from(document.querySelectorAll(".icCheck:checked")).map(x=>x.value)}
+function getParams(){const a=val("a"),b=val("b"),c=val("c"),d=val("d"),N=Math.floor(val("N")); const [pStar,qStar]=equilibrium(a,b,c,d); const m=buildMarket(a,b,c,d,N); return {a,b,c,d,N,pStar,qStar,values:m.values,costs:m.costs,maxEvents:Math.floor(val("maxEvents")),delta0:val("delta0"),maWindow:Math.floor(val("maWindow")),spreadThreshold:val("spreadThreshold"),burnIn:Math.floor(val("burnIn")),sampleUntil:Math.floor(val("sampleUntil")),sampleEvery:Math.floor(val("sampleEvery")),mcRuns:Math.max(1,Math.floor(val("mcRuns")))}}
+
+// ── MC aggregation helpers ──────────────────────────────────────────
+function stddev(a){if(a.length<2)return 0;const m=mean(a);return Math.sqrt(mean(a.map(v=>(v-m)**2)));}
+function mcAggregate(runs){
+  // runs: array of postProcess results for ONE IC
+  const statKeys=Object.keys(runs[0].stats).filter(k=>k!=="IC");
+  const agg={IC:runs[0].icName,mcN:runs.length};
+  for(const k of statKeys){
+    const vals=runs.map(r=>r.stats[k]).filter(Number.isFinite);
+    agg[k+"_mean"]=vals.length?mean(vals):NaN;
+    agg[k+"_std"]=vals.length>1?stddev(vals):NaN;
+    agg[k+"_min"]=vals.length?Math.min(...vals):NaN;
+    agg[k+"_max"]=vals.length?Math.max(...vals):NaN;
+  }
+  // keep all raw runs for plotting
+  agg.runs=runs;
+  // representative run = closest beta to median beta
+  const betas=runs.map(r=>r.fit?r.fit.beta:NaN).filter(Number.isFinite);
+  if(betas.length){const med=betas.slice().sort((a,b)=>a-b)[Math.floor(betas.length/2)];agg.repRun=runs.find(r=>r.fit&&Math.abs(r.fit.beta-med)<1e-9)||runs[0];}
+  else{agg.repRun=runs[0];}
+  return agg;
+}
+
+async function runAll(){
+  if(running)return; const params=getParams();
+  if(!Number.isFinite(params.pStar)||!Number.isFinite(params.qStar)||params.qStar<=0){alert("Invalid equilibrium. Need a > c and b + d > 0.");return}
+  if(params.qStar>params.N&&!confirm(`Q*=${params.qStar.toFixed(2)} > N=${params.N}. Run anyway?`)) return;
+  const selected=getSelectedICs(); if(!selected.length){alert("Select at least one IC.");return}
+  const MC=params.mcRuns;
+  const totalRuns=selected.length*MC;
+  freezeUI(true); setProgress(0,`Starting ${totalRuns} simulations (${MC} × ${selected.length} ICs)...`);
+  const mcGroups=[]; const started=performance.now(); let doneCount=0;
+  try{
+    for(let i=0;i<selected.length;i++){
+      const name=selected[i],[ab,as]=IC_DEFAULTS[name];
+      const runs=[];
+      for(let r=0;r<MC;r++){
+        const seed=document.getElementById('fixedSeed').checked?Math.floor(val('seedVal'))+i*MC+r:crypto.getRandomValues(new Uint32Array(1))[0];
+        const res=await runCDA(params,name,ab,as,seed,()=>{});
+        runs.push(postProcess(res,params));
+        doneCount++;
+        if(r%5===0||r===MC-1){setProgress(doneCount/totalRuns,`IC ${i+1}/${selected.length} — ${name} run ${r+1}/${MC}`); await new Promise(requestAnimationFrame);}
+      }
+      mcGroups.push(mcAggregate(runs));
+      setProgress(doneCount/totalRuns,`Finished ${name} (${MC} runs).`); await new Promise(requestAnimationFrame);
+    }
+    const runtime=(performance.now()-started)/1000;
+    latestProcessed=mcGroups; latestParams=params;
+    // for JSON export, flatten all run stats
+    latestResults={version:"cda_mc_dashboard",mc_runs_per_ic:MC,runtime_seconds:runtime,
+      market:{demand:`P = ${params.a} - ${params.b} Q`,supply:`P = ${params.c} + ${params.d} Q`,P_star:params.pStar,Q_star:params.qStar,N:params.N},
+      mc_summary:mcGroups.map(g=>{const o={IC:g.IC,mcN:g.mcN};for(const k of Object.keys(g))if(k.endsWith("_mean")||k.endsWith("_std"))o[k]=g[k];return o;})};
+    drawAll(mcGroups,params); buildTable(mcGroups); setProgress(1,`Done — ${totalRuns} runs in ${runtime.toFixed(2)}s.`);
+  }catch(e){console.error(e);alert("Simulation failed: "+e.message);setProgress(0,"Failed.");}
+  finally{freezeUI(false)}
+}
+
+const SVG_NS="http://www.w3.org/2000/svg";
+function makeSVG(containerId,title,xMin,xMax,yMin,yMax,xLabel="",yLabel="Price"){
+  const box=$(containerId); box.innerHTML="";
+  const svg=document.createElementNS(SVG_NS,"svg"); svg.setAttribute("viewBox","0 0 1000 500"); svg.setAttribute("preserveAspectRatio","xMidYMid meet"); box.appendChild(svg);
+  const pad={l:82,r:28,t:46,b:64}, w=1000,h=500;
+  const sx=x=>pad.l+(x-xMin)/(xMax-xMin||1)*(w-pad.l-pad.r);
+  const sy=y=>h-pad.b-(y-yMin)/(yMax-yMin||1)*(h-pad.t-pad.b);
+  const line=(x1,y1,x2,y2,cls="gridline")=>{const e=document.createElementNS(SVG_NS,"line");e.setAttribute("x1",x1);e.setAttribute("y1",y1);e.setAttribute("x2",x2);e.setAttribute("y2",y2);e.setAttribute("class",cls);svg.appendChild(e);return e};
+  const text=(x,y,s,cls="",anchor="middle")=>{const e=document.createElementNS(SVG_NS,"text");e.setAttribute("x",x);e.setAttribute("y",y);e.setAttribute("class",cls);e.setAttribute("text-anchor",anchor);e.textContent=s;svg.appendChild(e);return e};
+  // gridlines + x-axis tick labels
+  for(let i=0;i<=5;i++){const x=pad.l+i*(w-pad.l-pad.r)/5;line(x,pad.t,x,h-pad.b);text(x,h-pad.b+18,fmt(xMin+i*(xMax-xMin)/5,1),"axis")}
+  // y-axis tick labels — right-aligned just inside left pad
+  for(let i=0;i<=5;i++){const y=pad.t+i*(h-pad.t-pad.b)/5;line(pad.l,y,w-pad.r,y);text(pad.l-6,y+4,fmt(yMax-i*(yMax-yMin)/5,2),"axis","end")}
+  // axis labels
+  if(xLabel)text(pad.l+(w-pad.l-pad.r)/2,h-6,xLabel,"axis-label");
+  if(yLabel){const yl=document.createElementNS(SVG_NS,"text");yl.setAttribute("x",14);yl.setAttribute("y",pad.t+(h-pad.t-pad.b)/2);yl.setAttribute("class","axis-label");yl.setAttribute("text-anchor","middle");yl.setAttribute("transform",`rotate(-90,14,${pad.t+(h-pad.t-pad.b)/2})`);yl.textContent=yLabel;svg.appendChild(yl)}
+  text(pad.l+(w-pad.l-pad.r)/2,24,title,"chart-title");
+  return {svg,sx,sy,pad,w,h};
+}
+function pathFrom(x,y,sx,sy){
+  let d="",started=false;
+  for(let i=0;i<x.length;i++){
+    if(!Number.isFinite(x[i])||!Number.isFinite(y[i])) continue;
+    d+=(started?"L":"M")+sx(x[i]).toFixed(2)+" "+sy(y[i]).toFixed(2)+" "; started=true;
+  }
+  return d;
+}
+function addPath(g,x,y,sx,sy,color,width=2,dash="",label=""){
+  const p=document.createElementNS(SVG_NS,"path"); p.setAttribute("d",pathFrom(x,y,sx,sy)); p.setAttribute("fill","none"); p.setAttribute("stroke",color); p.setAttribute("stroke-width",width); if(dash)p.setAttribute("stroke-dasharray",dash); if(label)p.setAttribute("data-label",label); g.svg.appendChild(p); return p;
+}
+function addLegend(g,items){
+  const startX=g.pad.l+4, rowH=20;
+  let x=startX, y=g.h-g.pad.b+44;
+  const group=document.createElementNS(SVG_NS,"g"); group.setAttribute("class","legend"); g.svg.appendChild(group);
+  for(const it of items){
+    const itemW=it.label.length*7+50;
+    if(x+itemW>g.w-g.pad.r){x=startX;y+=rowH}
+    const l=document.createElementNS(SVG_NS,"line");l.setAttribute("x1",x);l.setAttribute("y1",y-4);l.setAttribute("x2",x+24);l.setAttribute("y2",y-4);l.setAttribute("stroke",it.color);l.setAttribute("stroke-width",3);if(it.dash)l.setAttribute("stroke-dasharray",it.dash);group.appendChild(l);
+    const t=document.createElementNS(SVG_NS,"text");t.setAttribute("x",x+30);t.setAttribute("y",y);t.textContent=it.label;group.appendChild(t);
+    x+=itemW;
+  }
+}
+function addHoverPoints(g,x,y,sx,sy,color,label){
+  const tip=$("tooltip");
+  const step=Math.max(1,Math.ceil(x.length/120));
+  for(let i=0;i<x.length;i+=step){
+    if(!Number.isFinite(x[i])||!Number.isFinite(y[i]))continue;
+    const c=document.createElementNS(SVG_NS,"circle"); c.setAttribute("cx",sx(x[i])); c.setAttribute("cy",sy(y[i])); c.setAttribute("r",5); c.setAttribute("fill",color); c.setAttribute("opacity","0");
+    c.addEventListener("mouseenter",ev=>{tip.style.display="block";tip.innerHTML=`<b>${label}</b><br>x=${fmt(x[i],2)}<br>y=${fmt(y[i],6)}`});
+    c.addEventListener("mousemove",ev=>{tip.style.left=(ev.clientX+12)+"px";tip.style.top=(ev.clientY+12)+"px"});
+    c.addEventListener("mouseleave",()=>tip.style.display="none");
+    g.svg.appendChild(c);
+  }
+}
+
+function drawAll(mcGroups,params){drawCurvePreview(params.a,params.b,params.c,params.d,params.pStar,params.qStar,params.N);drawMA(mcGroups,params);drawSpread(mcGroups,params);drawResiduals(mcGroups);drawIntegral(mcGroups)}
+function drawCurvePreview(a,b,c,d,pStar,qStar,N){
+  const xMax=Math.max(N,Number.isFinite(qStar)?qStar*1.15:N), xs=[],yd=[],ys=[];
+  for(let i=0;i<300;i++){const q=xMax*i/299;xs.push(q);yd.push(a-b*q);ys.push(c+d*q)}
+  const ymin=Math.min(arrMin(yd),arrMin(ys),pStar), ymax=Math.max(arrMax(yd),arrMax(ys),pStar), pad=.1*(ymax-ymin||1);
+  const g=makeSVG("curveGraph","Supply and demand",0,xMax,ymin-pad,ymax+pad,"Quantity","Price");
+  addPath(g,xs,yd,g.sx,g.sy,COLORS.demand,3,"","Demand"); addPath(g,xs,ys,g.sx,g.sy,COLORS.supply,3,"","Supply");
+  if(Number.isFinite(qStar)&&Number.isFinite(pStar)){addPath(g,[qStar,qStar],[ymin-pad,ymax+pad],g.sx,g.sy,COLORS.pstar,2,"6 5","Q*");addPath(g,[0,xMax],[pStar,pStar],g.sx,g.sy,COLORS.pstar,2,"6 5","P*")}
+  addLegend(g,[{label:"Demand",color:COLORS.demand},{label:"Supply",color:COLORS.supply},{label:"P*,Q*",color:COLORS.pstar,dash:"6 5"}]);
+}
+// helper: add a faint trace with no hover
+function addFaintPath(g,x,y,sx,sy,color){
+  const p=document.createElementNS(SVG_NS,"path"); p.setAttribute("d",pathFrom(x,y,sx,sy)); p.setAttribute("fill","none"); p.setAttribute("stroke",color); p.setAttribute("stroke-width","0.6"); p.setAttribute("opacity","0.18"); g.svg.appendChild(p);
+}
+function drawMA(mcGroups,params){
+  let maxX=1,ys=[];
+  for(const g of mcGroups){for(const r of g.runs){maxX=Math.max(maxX,...r.ma.x);ys=ys.concat(r.ma.y)} if(g.repRun&&g.repRun.fit)ys=ys.concat(g.repRun.fit.pred)} ys.push(params.pStar);
+  const ymin=arrMin(ys),ymax=arrMax(ys),pad=.08*(ymax-ymin||1);
+  const gr=makeSVG("maGraph",`Moving averages — all MC traces + median ODE fit`,0,maxX,ymin-pad,ymax+pad,"Contract index","Price");
+  const items=[];
+  for(const g of mcGroups){
+    const color=COLORS[g.IC]||"#fff";
+    for(const r of g.runs) addFaintPath(gr,r.ma.x,r.ma.y,gr.sx,gr.sy,color);
+    // bold median rep run
+    addPath(gr,g.repRun.ma.x,g.repRun.ma.y,gr.sx,gr.sy,color,2.5,"",g.IC);
+    addHoverPoints(gr,g.repRun.ma.x,g.repRun.ma.y,gr.sx,gr.sy,color,g.IC+" median MA");
+    if(g.repRun.fit) addPath(gr,g.repRun.fit.x,g.repRun.fit.pred,gr.sx,gr.sy,COLORS.ode,2,"8 5","ODE");
+    items.push({label:g.IC,color});
+  }
+  addPath(gr,[0,maxX],[params.pStar,params.pStar],gr.sx,gr.sy,COLORS.pstar,2,"5 5","P*"); items.push({label:"median ODE",color:COLORS.ode,dash:"8 5"},{label:"P*",color:COLORS.pstar,dash:"5 5"}); addLegend(gr,items);
+}
+function drawSpread(mcGroups,params){
+  let maxX=1,ys=[0,params.spreadThreshold];
+  for(const g of mcGroups){for(const r of g.runs){maxX=Math.max(maxX,...r.bookEvents);ys=ys.concat(r.spreads.filter(Number.isFinite))}}
+  const gr=makeSVG("spreadGraph","Sampled live spread — all MC traces",0,maxX,Math.min(0,arrMin(ys)),Math.max(arrMax(ys)*1.08,1),"Event","Spread");
+  const items=[];
+  for(const g of mcGroups){
+    const color=COLORS[g.IC]||"#fff";
+    for(const r of g.runs) addFaintPath(gr,r.bookEvents,r.spreads,gr.sx,gr.sy,color);
+    addPath(gr,g.repRun.bookEvents,g.repRun.spreads,gr.sx,gr.sy,color,2,"",g.IC);
+    addHoverPoints(gr,g.repRun.bookEvents,g.repRun.spreads,gr.sx,gr.sy,color,g.IC+" spread");
+    items.push({label:g.IC,color});
+  }
+  addPath(gr,[0,maxX],[params.spreadThreshold,params.spreadThreshold],gr.sx,gr.sy,COLORS.warn,2,"7 5","threshold"); items.push({label:"threshold",color:COLORS.warn,dash:"7 5"}); addLegend(gr,items);
+}
+function drawResiduals(mcGroups){
+  let maxX=1,ys=[0];
+  for(const g of mcGroups){for(const r of g.runs){if(!r.fit)continue;maxX=Math.max(maxX,...r.fit.x);ys=ys.concat(r.fit.resid)}}
+  const abs=Math.max(.001,arrAbsMax(ys));
+  const gr=makeSVG("residGraph","Post-formation residuals — all MC traces",0,maxX,-abs*1.1,abs*1.1,"Contract index","Residual");
+  const items=[];
+  for(const g of mcGroups){
+    const color=COLORS[g.IC]||"#fff";
+    for(const r of g.runs){if(!r.fit)continue; addFaintPath(gr,r.fit.x,r.fit.resid,gr.sx,gr.sy,color);}
+    if(g.repRun&&g.repRun.fit){addPath(gr,g.repRun.fit.x,g.repRun.fit.resid,gr.sx,gr.sy,color,2,"",g.IC); addHoverPoints(gr,g.repRun.fit.x,g.repRun.fit.resid,gr.sx,gr.sy,color,g.IC+" residual");}
+    items.push({label:g.IC,color});
+  }
+  addPath(gr,[0,maxX],[0,0],gr.sx,gr.sy,COLORS.pstar,2,"5 5","zero"); addLegend(gr,items);
+}
+function drawIntegral(mcGroups){
+  let maxX=1,ys=[0];
+  for(const g of mcGroups){for(const r of g.runs){if(!r.fit)continue;const e=r.fit.resid,x=r.fit.x,cum=new Array(e.length).fill(0);for(let i=1;i<e.length;i++)cum[i]=cum[i-1]+.5*(e[i]+e[i-1])*(x[i]-x[i-1]);maxX=Math.max(maxX,...x);ys=ys.concat(cum)}}
+  const abs=Math.max(.001,arrAbsMax(ys));
+  const gr=makeSVG("intGraph","Cumulative signed residual integral — all MC traces",0,maxX,-abs*1.1,abs*1.1,"Contract index","Cumul. integral");
+  const items=[];
+  for(const g of mcGroups){
+    const color=COLORS[g.IC]||"#fff";
+    for(const r of g.runs){if(!r.fit)continue;const e=r.fit.resid,x=r.fit.x,cum=new Array(e.length).fill(0);for(let i=1;i<e.length;i++)cum[i]=cum[i-1]+.5*(e[i]+e[i-1])*(x[i]-x[i-1]);addFaintPath(gr,x,cum,gr.sx,gr.sy,color);}
+    // bold rep run
+    if(g.repRun&&g.repRun.fit){const e=g.repRun.fit.resid,x=g.repRun.fit.x,cum=new Array(e.length).fill(0);for(let i=1;i<e.length;i++)cum[i]=cum[i-1]+.5*(e[i]+e[i-1])*(x[i]-x[i-1]);addPath(gr,x,cum,gr.sx,gr.sy,color,2,"",g.IC);addHoverPoints(gr,x,cum,gr.sx,gr.sy,color,g.IC+" cumul integral");}
+    items.push({label:g.IC,color});
+  }
+  addPath(gr,[0,maxX],[0,0],gr.sx,gr.sy,COLORS.pstar,2,"5 5","zero"); addLegend(gr,items);
+  // Ratio chips — use MC mean signed / MC mean abs area
+  const panel=$("ratioPanel"); panel.innerHTML="";
+  for(const g of mcGroups){
+    const si=g.signed_integral_mean, aa=g.absolute_area_residuals_mean;
+    const siStd=g.signed_integral_std, aaStd=g.absolute_area_residuals_std;
+    const ratio=Number.isFinite(si)&&aa>0?si/aa:NaN;
+    const biasClass=!Number.isFinite(ratio)?"bias-zero":ratio>0.05?"bias-pos":ratio<-0.05?"bias-neg":"bias-zero";
+    const chip=document.createElement("div"); chip.className=`ratio-chip ${biasClass}`;
+    chip.innerHTML=`<div class="rc-ic">${g.IC} <span style="font-weight:400;opacity:.6">(n=${g.mcN})</span></div><div class="rc-ratio">${Number.isFinite(ratio)?ratio.toFixed(3):"N/A"}</div><div class="rc-sub">∫signed̄=${Number.isFinite(si)?si.toFixed(4):"N/A"} ±${Number.isFinite(siStd)?siStd.toFixed(4):""} &nbsp;·&nbsp; ∫|r|̄=${Number.isFinite(aa)?aa.toFixed(4):"N/A"} ±${Number.isFinite(aaStd)?aaStd.toFixed(4):""}</div>`;
+    panel.appendChild(chip);
+  }
+}
+
+function buildTable(mcGroups){
+  // Key stats to show with mean ± std
+  const keyStats=["contracts","contracts_Qstar_ratio","mean_last_500","pstar_deviation_last_500","price_ratio_last_500","beta","r2","rmse","mae","signed_integral","absolute_area_residuals","mean_residual_from_integral","formation_ratio","crossed_book_violations","negative_surplus_violations"];
+  const headers={"contracts":"Contracts","contracts_Qstar_ratio":"Q/Q*","mean_last_500":"Mean last 500","pstar_deviation_last_500":"Δ P*","price_ratio_last_500":"Price/P*","beta":"β (ODE)","r2":"R²","rmse":"RMSE","mae":"MAE","signed_integral":"∫ signed","absolute_area_residuals":"∫ |resid|","mean_residual_from_integral":"Mean resid","formation_ratio":"Form. ratio","crossed_book_violations":"Crossed book","negative_surplus_violations":"Neg. surplus"};
+  const thead=$("resultsTable").querySelector("thead");
+  thead.innerHTML="<tr><th>IC</th><th>n</th>"+keyStats.map(k=>`<th title="${k}">${headers[k]||k}<br><span style='font-weight:400;opacity:.6;font-size:10px'>mean ± std</span></th>`).join("")+"</tr>";
+  const tb=$("resultsTable").querySelector("tbody"); tb.innerHTML="";
+  for(const g of mcGroups){
+    const color=COLORS[g.IC]||"#fff";
+    const tr=document.createElement("tr");
+    let cells=`<td><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${color};margin-right:6px;vertical-align:middle"></span>${g.IC}</td>`;
+    cells+=`<td>${g.mcN}</td>`;
+    for(const k of keyStats){
+      const m=g[k+"_mean"], s=g[k+"_std"];
+      let style="";
+      if(k==="r2"&&Number.isFinite(m)) style=m>0.9?"color:var(--good)":m>0.7?"color:var(--warn)":"color:var(--bad)";
+      const mStr=Number.isFinite(m)?fmt(m,4):"—";
+      const sStr=Number.isFinite(s)?fmt(s,4):"";
+      cells+=`<td style="${style}">${mStr}<br><span style="opacity:.5;font-size:10px">${sStr?("±"+sStr):""}</span></td>`;
+    }
+    tr.innerHTML=cells; tb.appendChild(tr);
+  }
+}
+function updatePreview(){const a=val("a"),b=val("b"),c=val("c"),d=val("d"),N=val("N");const [p,q]=equilibrium(a,b,c,d);$("pStar").textContent=fmt(p,6);$("qStar").textContent=fmt(q,2);$("qRatio").textContent=Number.isFinite(q)?fmt(q/N,3):"NaN";drawCurvePreview(a,b,c,d,p,q,N); if(latestProcessed&&latestParams)drawAll(latestProcessed,latestParams)}
+function setPreset(type){if(type==="original"){$("a").value=4;$("b").value=.00048;$("c").value=.2;$("d").value=.00032;$("N").value=5000}else if(type==="flatSupply"){$("a").value=5;$("b").value=.001;$("c").value=1.5;$("d").value=0;$("N").value=5000}else{$("a").value=2.8;$("b").value=0;$("c").value=.5;$("d").value=.0005;$("N").value=5000}updatePreview()}
+function downloadResults(){if(!latestResults)return;const blob=new Blob([JSON.stringify(latestResults,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="cda_html_svg_dashboard_results.json";document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}
+
+setupICBoxes(); updatePreview();
+document.getElementById('fixedSeed').addEventListener('change',function(){
+  document.getElementById('seedRow').style.display=this.checked?'block':'none';
+  document.getElementById('seedHint').textContent=this.checked?'Runs are reproducible with this seed.':'Each run uses a fresh random seed.';
+});
+document.querySelectorAll("input").forEach(i=>i.addEventListener("input",updatePreview));
+$("runBtn").addEventListener("click",runAll); $("downloadBtn").addEventListener("click",downloadResults);
+$("presetOriginal").addEventListener("click",()=>setPreset("original")); $("presetFlatSupply").addEventListener("click",()=>setPreset("flatSupply")); $("presetFlatDemand").addEventListener("click",()=>setPreset("flatDemand"));
+window.addEventListener("resize",()=>{ if(latestProcessed&&latestParams)drawAll(latestProcessed,latestParams); else updatePreview(); });
+</script>
+</body>
+</html>

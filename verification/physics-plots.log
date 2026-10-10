@@ -1,0 +1,22 @@
+Plotting fit panels...
+  wrote results/plots/fit_symmetric.png
+  wrote results/plots/fit_asymmetric.png
+  wrote results/plots/fit_flat_supply.png
+  wrote results/plots/fit_flat_demand.png
+  wrote results/plots/fit_nonlinear.png
+Plotting residuals...
+  wrote results/plots/resids_symmetric.png
+  wrote results/plots/resids_asymmetric.png
+  wrote results/plots/resids_flat_supply.png
+  wrote results/plots/resids_flat_demand.png
+  wrote results/plots/resids_nonlinear.png
+Plotting formation diagnostics...
+  wrote results/plots/formation_symmetric.png
+  wrote results/plots/formation_asymmetric.png
+  wrote results/plots/formation_flat_supply.png
+  wrote results/plots/formation_flat_demand.png
+  wrote results/plots/formation_nonlinear.png
+Plotting E[P] decomposition...
+  wrote results/plots/EP_decomposition.png
+
+All plots in results/plots/

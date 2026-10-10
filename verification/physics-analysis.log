@@ -1,0 +1,36 @@
+Analysing symmetric/shortage...
+  beta=0.00610  R^2=+0.9027  RMSE=0.0062  ΔP_500=+0.0006
+Analysing symmetric/surplus...
+  beta=0.00559  R^2=+0.9290  RMSE=0.0074  ΔP_500=-0.0036
+Analysing asymmetric/shortage...
+  beta=0.00721  R^2=+0.5985  RMSE=0.0088  ΔP_500=-0.0101
+Analysing asymmetric/surplus...
+  beta=0.00562  R^2=+0.8672  RMSE=0.0090  ΔP_500=-0.0125
+Analysing flat_supply/shortage...
+  beta=0.00047  R^2=+0.8672  RMSE=0.0012  ΔP_500=+0.0007
+Analysing flat_supply/surplus...
+  beta=0.00033  R^2=+0.7620  RMSE=0.0012  ΔP_500=+0.0009
+Analysing flat_demand/shortage...
+  beta=0.00526  R^2=+0.5869  RMSE=0.0222  ΔP_500=-0.0039
+Analysing flat_demand/surplus...
+  beta=0.00021  R^2=+0.6910  RMSE=0.0059  ΔP_500=-0.0036
+Analysing nonlinear/shortage...
+  beta=0.00628  R^2=+0.6433  RMSE=0.0110  ΔP_500=-0.0127
+Analysing nonlinear/surplus...
+  beta=0.03585  R^2=-3.9708  RMSE=0.0176  ΔP_500=-0.0178
+
+Wrote fit summary -> results/tex_data/fit_summary.json
+Wrote Table 3 -> results/tex_data/table3_cell_fit.csv
+
+Wrote E[P] decomposition -> results/tex_data/EP_decomposition.csv
+        env       ic   P_star        A        B      p_b      p_s  geometric  behavioural  EP_minus_Pstar  observed_dp_500
+  symmetric shortage 2.100000 2.145335 2.055086 0.259062 0.418637   0.000211    -0.010625       -0.010415         0.000595
+  symmetric  surplus 2.100000 2.140572 2.050977 0.260548 0.417620  -0.004225    -0.010376       -0.014601        -0.003583
+ asymmetric shortage 1.720000 1.754006 1.665464 0.333336 0.402963  -0.010265    -0.004186       -0.014452        -0.010129
+ asymmetric  surplus 1.720000 1.751134 1.665661 0.334323 0.403024  -0.011602    -0.003982       -0.015584        -0.012524
+flat_supply shortage 1.500000 1.501629 1.500000 0.338416 0.000000   0.000815     0.000815        0.001629         0.000661
+flat_supply  surplus 1.500000 1.504328 1.500000 0.337767 0.000000   0.002164     0.002164        0.004328         0.000948
+flat_demand shortage 2.800000 2.800000 2.787622 0.000000 0.375461  -0.006189    -0.006189       -0.012378        -0.003910
+flat_demand  surplus 2.800000 2.800000 2.788477 0.000000 0.375626  -0.005761    -0.005761       -0.011523        -0.003586
+  nonlinear shortage 2.061458 2.097525 1.995985 0.222821 0.375752  -0.014703    -0.012971       -0.027674        -0.012706
+  nonlinear  surplus 2.061458 2.094698 1.992156 0.223545 0.375044  -0.018031    -0.012976       -0.031008        -0.017837

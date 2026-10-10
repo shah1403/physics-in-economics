@@ -1,0 +1,139 @@
+{
+  "version": "cda_post_formation_mse_residual_ar1_5ics",
+  "P_star": 1.72,
+  "Q_star": 4750.0,
+  "N": 5000,
+  "MAX_EVENTS": 70000,
+  "runtime_seconds": 1.7372705936431885,
+  "book_formation_rule": "First sampled event where 30-sample rolling median spread < 0.08, mapped to contract index, with minimum 250-contract burn-in. Uses only book state, not P*.",
+  "fit_rule": "Fit ODE to 100-contract moving average after detected order-book formation. Residual = observed MA - ODE prediction.",
+  "ar1_rule": "OLS AR(1) on residuals: e_t = c + phi e_(t-1) + innovation.",
+  "runs": {
+    "extreme_shortage": {
+      "alpha_b": 0.2,
+      "alpha_s": 1.02,
+      "seed": 701,
+      "n_contracts": 4887,
+      "violation_count": 0,
+      "formation_contract_index": 250,
+      "formation_event_estimate": 660,
+      "mean_last_500": 1.7143768592146142,
+      "error_last_500": -0.005623140785385727,
+      "post_formation_fit": {
+        "beta": 325.77717903985007,
+        "mse": 0.002308021527938448,
+        "rmse": 0.04804187265228582,
+        "mae": 0.03277552383613166,
+        "ar1_phi": 0.9998926842920516,
+        "ar1_intercept": -2.2028781153293417e-06,
+        "ar1_innovation_mse": 5.476029439905141e-07,
+        "P0_post": 1.3975702720000007,
+        "formation_contract": 250,
+        "formation_event": 693,
+        "n_residuals": 4637
+      }
+    },
+    "shortage": {
+      "alpha_b": 0.5,
+      "alpha_s": 1.05,
+      "seed": 702,
+      "n_contracts": 4901,
+      "violation_count": 0,
+      "formation_contract_index": 250,
+      "formation_event_estimate": 460,
+      "mean_last_500": 1.7139641380955493,
+      "error_last_500": -0.006035861904450712,
+      "post_formation_fit": {
+        "beta": 355.7094924914634,
+        "mse": 0.0021811705184629797,
+        "rmse": 0.04670300331309518,
+        "mae": 0.03624627208138399,
+        "ar1_phi": 0.9998992633421971,
+        "ar1_intercept": -7.129845690364775e-07,
+        "ar1_innovation_mse": 4.3185127245250215e-07,
+        "P0_post": 1.6580155200000002,
+        "formation_contract": 250,
+        "formation_event": 579,
+        "n_residuals": 4651
+      }
+    },
+    "mid_mixed": {
+      "alpha_b": 0.75,
+      "alpha_s": 1.25,
+      "seed": 703,
+      "n_contracts": 4885,
+      "violation_count": 0,
+      "formation_contract_index": 250,
+      "formation_event_estimate": 300,
+      "mean_last_500": 1.7079268362270439,
+      "error_last_500": -0.012073163772956086,
+      "post_formation_fit": {
+        "beta": 13.682559716467999,
+        "mse": 0.002197739325340628,
+        "rmse": 0.04688005253133392,
+        "mae": 0.03531855708224806,
+        "ar1_phi": 0.9999132609945188,
+        "ar1_intercept": 3.287988125163653e-07,
+        "ar1_innovation_mse": 3.814565921397516e-07,
+        "P0_post": 1.7595221959779284,
+        "formation_contract": 250,
+        "formation_event": 582,
+        "n_residuals": 4635
+      }
+    },
+    "surplus": {
+      "alpha_b": 0.95,
+      "alpha_s": 1.5,
+      "seed": 704,
+      "n_contracts": 4896,
+      "violation_count": 0,
+      "formation_contract_index": 250,
+      "formation_event_estimate": 400,
+      "mean_last_500": 1.700770082133793,
+      "error_last_500": -0.01922991786620698,
+      "post_formation_fit": {
+        "beta": 132.11735387519641,
+        "mse": 0.003625946185151262,
+        "rmse": 0.060215830021276485,
+        "mae": 0.0477991115210397,
+        "ar1_phi": 0.9999269583465804,
+        "ar1_intercept": -5.722770722990309e-07,
+        "ar1_innovation_mse": 5.231914756878281e-07,
+        "P0_post": 1.8299584000000044,
+        "formation_contract": 250,
+        "formation_event": 626,
+        "n_residuals": 4646
+      }
+    },
+    "extreme_surplus": {
+      "alpha_b": 1.0,
+      "alpha_s": 5.0,
+      "seed": 705,
+      "n_contracts": 4922,
+      "violation_count": 0,
+      "formation_contract_index": 957,
+      "formation_event_estimate": 3300,
+      "mean_last_500": 1.6835992997078306,
+      "error_last_500": -0.03640070029216935,
+      "post_formation_fit": {
+        "beta": 205.92264865660718,
+        "mse": 0.001811626783644149,
+        "rmse": 0.04256320927331666,
+        "mae": 0.03273686293726852,
+        "ar1_phi": 0.9998270897150918,
+        "ar1_intercept": -2.0226935891010447e-06,
+        "ar1_innovation_mse": 6.080711001971749e-07,
+        "P0_post": 2.3205613415313895,
+        "formation_contract": 957,
+        "formation_event": 3305,
+        "n_residuals": 3965
+      }
+    }
+  },
+  "plots": {
+    "residuals": "/mnt/data/cda_post_formation_residuals_5ics.png",
+    "extreme_surplus_ar1_scatter": "/mnt/data/cda_extreme_surplus_ar1_residual_scatter.png",
+    "mse_bar": "/mnt/data/cda_post_formation_mse_bar.png",
+    "ar1_phi_bar": "/mnt/data/cda_post_formation_ar1_phi_bar.png"
+  }
+}

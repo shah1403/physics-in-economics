@@ -1,0 +1,41 @@
+{
+  "smith_source": "Table 2, p.14 of supplied paper; manually transcribed chart-derived values, not original experimental raw tape",
+  "smith": {
+    "n": 28,
+    "tau": 5.16585024724863,
+    "rate": 0.19357897580027747,
+    "r2": 0.5614011571473967,
+    "rmse": 0.08120502004843641,
+    "within_5pct": 25,
+    "paper_metric_below_5": 18
+  },
+  "equilibria": [
+    {
+      "env": "symmetric",
+      "q": 4750.0,
+      "p": 2.1
+    },
+    {
+      "env": "asymmetric",
+      "q": 4750.0,
+      "p": 1.72
+    },
+    {
+      "env": "flat_supply",
+      "q": 3500.0,
+      "p": 1.5
+    },
+    {
+      "env": "flat_demand",
+      "q": 4600.0,
+      "p": 2.8000000000000003
+    },
+    {
+      "env": "nonlinear",
+      "q": 3846.613084799823,
+      "p": 2.061457978207327
+    }
+  ],
+  "seed_repeat_and_unused_pstar_check": "passed; q_star still affects stopping rule",
+  "cross_process_seed_check": "passed"
+}

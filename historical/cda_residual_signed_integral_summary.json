@@ -1,0 +1,88 @@
+{
+  "version": "cda_residual_signed_integral_post_formation",
+  "P_star": 1.72,
+  "Q_star": 4750.0,
+  "N": 5000,
+  "runtime_seconds": 1.6812663078308105,
+  "definition": {
+    "residual": "e(k)=100-contract moving average observed price - post-formation ODE prediction",
+    "integral": "Signed trapezoidal integral int e(k) dk over contract index k. This is not absolute area.",
+    "signed_sum": "Plain sum of residual samples, included as a discrete check."
+  },
+  "runs": {
+    "extreme_shortage": {
+      "alpha_b": 0.2,
+      "alpha_s": 1.02,
+      "formation_contract": 250,
+      "formation_event": 693,
+      "beta": 325.77717903985007,
+      "mse": 0.002308021527938448,
+      "signed_integral_trapz": 20.131208322087613,
+      "signed_sum_residuals": 20.125021521209344,
+      "mean_residual_from_integral": 0.004342365902089649,
+      "n_residuals": 4637,
+      "residual_start": 0.0,
+      "residual_end": -0.012373601756530794
+    },
+    "shortage": {
+      "alpha_b": 0.5,
+      "alpha_s": 1.05,
+      "formation_contract": 250,
+      "formation_event": 579,
+      "beta": 355.7094924914634,
+      "mse": 0.0021811705184629797,
+      "signed_integral_trapz": -25.409112467973053,
+      "signed_sum_residuals": -25.409490361596056,
+      "mean_residual_from_integral": -0.005464325261929689,
+      "n_residuals": 4651,
+      "residual_start": 0.0,
+      "residual_end": -0.0007557872459957871
+    },
+    "mid_mixed": {
+      "alpha_b": 0.75,
+      "alpha_s": 1.25,
+      "formation_contract": 250,
+      "formation_event": 582,
+      "beta": 13.682559716467999,
+      "mse": 0.002197739325340628,
+      "signed_integral_trapz": 1.8865439830092292,
+      "signed_sum_residuals": 1.8872240208762818,
+      "mean_residual_from_integral": 0.00040710918925533645,
+      "n_residuals": 4635,
+      "residual_start": 0.0,
+      "residual_end": 0.0013600757341127867
+    },
+    "surplus": {
+      "alpha_b": 0.95,
+      "alpha_s": 1.5,
+      "formation_contract": 250,
+      "formation_event": 626,
+      "beta": 132.11735387519641,
+      "mse": 0.003625946185151262,
+      "signed_integral_trapz": -27.157006985114922,
+      "signed_sum_residuals": -27.157344314588837,
+      "mean_residual_from_integral": -0.00584650311843163,
+      "n_residuals": 4646,
+      "residual_start": 0.0,
+      "residual_end": -0.0006746589478257015
+    },
+    "extreme_surplus": {
+      "alpha_b": 1.0,
+      "alpha_s": 5.0,
+      "formation_contract": 957,
+      "formation_event": 3305,
+      "beta": 205.92264865660718,
+      "mse": 0.001811626783644149,
+      "signed_integral_trapz": -22.40410471337008,
+      "signed_sum_residuals": -22.406176921152152,
+      "mean_residual_from_integral": -0.0056518932172982045,
+      "n_residuals": 3965,
+      "residual_start": 0.0,
+      "residual_end": -0.004144415564138582
+    }
+  },
+  "plots": {
+    "cumulative_signed_integral": "/mnt/data/cda_residual_cumulative_signed_integral.png",
+    "signed_integral_bar": "/mnt/data/cda_residual_signed_integral_bar.png"
+  }
+}

@@ -1,0 +1,9 @@
+source,status,execution
+analyze.py,parsed,see README; parsing is not a behavioral test
+cda.py,parsed,see README; parsing is not a behavioral test
+environments.py,parsed,see README; parsing is not a behavioral test
+historical/cda_mc75_generator.py,parsed,see README; parsing is not a behavioral test
+historical/corrected_audited_cda.py,parsed,see README; parsing is not a behavioral test
+plot.py,parsed,see README; parsing is not a behavioral test
+run_mc.py,parsed,see README; parsing is not a behavioral test
+verify.py,parsed,see README; parsing is not a behavioral test
