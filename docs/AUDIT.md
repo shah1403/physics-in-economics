@@ -1,4 +1,4 @@
-# Verification and model limits
+# Model conventions and numerical verification
 
 ## What was recovered
 
@@ -12,10 +12,10 @@ The Smith Test 1 table contains 28 chart-digitized prices. Refitting P(t)=2-0.3 
 
 The paper's plotted `100*abs(predicted-observed)` is an absolute dollar error multiplied by 100, not percentage error. The corrected relative error divides by the observed price. 25/28 observations satisfy a 5% relative-error threshold; 18/28 satisfy the paper's plotted threshold. The supplied PDF is preserved unchanged, with this erratum alongside it.
 
-## Code/documentation discrepancies
+## Parameter and implementation conventions
 
 1. Upstream Python hash-based seeds change across interpreter processes. SHA-256-derived seeds fix this for new runs. Exact original paper seeds are unavailable; these are new replications.
-2. Paper beta is a time constant in exp(-t/beta). `analyze.py` beta is a rate in exp(-beta*t). They are reciprocals: the Smith rate is about 0.193579 per transaction. The original README's statement that these beta values are directly comparable is misleading.
+2. Paper beta is a time constant in exp(-t/beta). `analyze.py` beta is a rate in exp(-beta*t). They are reciprocals: the Smith rate is about 0.193579 per transaction. Comparing these beta values requires taking the reciprocal.
 3. `analyze.py` uses a **fixed n0=250**, not detected formation. Plotting average spread is not a formation detector.
 4. The E[P] routine uses the 90th/10th percentiles of tail contract prices as ask/bid proxies. It does not observe the contemporaneous best quotes or active trader pool. It averages acceptance probabilities over the initial population and assumes frustration s=1. Its output is an exploratory proxy calculation, not a measured mechanism decomposition or verification of the paper's R-squared=0.998 claim.
 5. `p_star` is unused in trading decisions, but `q_star` enters a stopping condition. Therefore the entire simulation cannot be described as having no access to equilibrium information.
@@ -26,3 +26,4 @@ The paper's plotted `100*abs(predicted-observed)` is an absolute dollar error mu
 ## Scope
 
 The rerun covers all five environments and both initial conditions at 75 seeds per cell. Source and input hashes, run-level outputs, parameter fits and command logs are retained. It is a fresh numerical replication with audit corrections, not proof of universal market convergence, exact original-seed replication, or validation of every theoretical claim. The original PDF and legacy dashboard remain historical documents.
+
