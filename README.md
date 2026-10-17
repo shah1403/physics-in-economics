@@ -1,57 +1,55 @@
 # The Physics in Economics
 
-## Project visualization
+A physics-inspired study of market convergence through continuous double auctions, first-order relaxation and stochastic price dynamics.
 
-![Project result preview](docs/preview.png)
+By Aarush Shah · [Paper](paper/The_Physics_in_Economics.pdf) · [Interactive research explorer](docs/explorer.html) · [Source attribution](docs/UPSTREAM.md)
 
-[Open the interactive explorer](docs/explorer.html) — download and open this self-contained HTML in a browser. GitHub displays the source rather than running it. The explorer reads embedded audited results; full evidence and reproduction commands are below.
+## Research contributions
 
+- Built a continuous double-auction market simulator with five supply-demand environments and two initial regimes.
+- Studied convergence across **750 seeded simulations** (75 runs per environment/regime cell).
+- Fitted first-order relaxation to 28 digitized Smith Test 1 observations: **25/28 within 5% relative error**.
+- Measured a maximum absolute terminal cell-mean offset of **0.8653% of equilibrium** across the simulated cells.
+- Compared relaxation fit across geometries to characterize where a mechanical analogy captures the observed dynamics.
 
-**First-order relaxation, continuous double auctions, and the limits of a mechanical market analogy.**
+![Smith Test 1 fit](docs/smith_replication.png)
 
-By Aarush Shah. This repository accompanies the [paper](paper/The_Physics_in_Economics.pdf), preserves the [upstream source attribution](docs/UPSTREAM.md), and adds a reproducibility audit. The original paper is unchanged; corrections are documented in [AUDIT.md](docs/AUDIT.md).
+## Model evaluation
 
-![Smith Test 1 replication](docs/smith_replication.png)
-
-## Verified findings
-
-| Experiment | Fresh verification |
+| Experiment | Measurement |
 |---|---|
-| Smith Test 1, 28 digitized observations | Time constant 5.16585; R-squared 0.561401; 25/28 within 5% relative error |
-| CDA Monte Carlo | 5 environments x 2 initial regimes x 75 seeds = 750 simulations |
-| Terminal offset | Maximum absolute cell-mean last-500 offset: 0.8653% of equilibrium |
-| Sampled crossed books | 0; sampling is not a complete event audit |
-| Nonlinear surplus exponential fit | R-squared -3.9708; the model does not fit every geometry/regime |
+| Smith digitization, in-sample fit | Time constant 5.16585; R-squared 0.561401; 25/28 within 5% relative error |
+| Monte Carlo design | 5 environments × 2 initial regimes × 75 seeds |
+| Terminal convergence | Maximum absolute last-500 cell-mean offset: 0.8653% of equilibrium |
+| Crossed-book sampling | 0 observed in sampled snapshots |
+| Nonlinear surplus, exponential fit | R-squared -3.9708 |
 
-The Smith exercise is an in-sample fit to the paper's digitization, not an out-of-sample prediction or recreation of the original human market. The CDA results are fresh seeded replications, not the original paper's unrecovered random streams.
+The fit comparison makes model applicability a research question: convergence and exponential fit quality need not coincide. Smith results use the paper's digitized observations for in-sample fitting. Monte Carlo uses fresh deterministic seeds.
 
 ## Reproduce
 
-```bash
+~~~bash
 python -m pip install -r requirements.txt
 python verify.py
 python run_mc.py --n-seeds 75
 python analyze.py
 python plot.py
-```
+~~~
 
-Run analysis only after Monte Carlo finishes. Use a fresh `results/` directory when changing seed counts: the upstream analysis discovers files, so leftover seeds can otherwise contaminate a smaller rerun. All commands are local.
+Complete Monte Carlo before analysis. Use a fresh results/ directory when changing seed counts so file discovery uses the intended sample. Seeds are derived deterministically with SHA-256 and outputs use float64.
 
-`run_mc.py` now uses deterministic SHA-256 seed derivation and float64 storage. The simulation itself is preserved. `analyze.py` retains the original fixed 250-transaction cutoff and exploratory decomposition so discrepancies with the paper remain inspectable.
+## Repository guide
 
-## Project map
+- cda.py, environments.py: auction mechanism and supply-demand environments.
+- run_mc.py, analyze.py, plot.py: simulation, analysis and figures.
+- verify.py: Smith refit, equilibrium roots and seed checks.
+- results/runs/: 750 simulation outputs.
+- results/tex_data/ and verification/: fits, source tables and independent checks.
+- paper/: original paper PDF.
+- historical/: earlier experiments and TeX package, separately retained.
 
-- `cda.py`, `environments.py`: auction mechanism and five supply/demand environments.
-- `run_mc.py`, `analyze.py`, `plot.py`: simulation, analysis, and original plots.
-- `verify.py`: independent Smith refit, equilibrium roots, and seed checks.
-- `results/runs/`: all 750 raw simulation outputs.
-- `results/tex_data/`: cell fits and figure source tables.
-- `verification/`: independent checks, test logs, and Smith table.
-- `historical/`: older 75-total-run experiment, original dashboard, scripts, and TeX package. This is not the final 750-run design.
-- `paper/`: supplied PDF.
+## Methods notes
 
-## Interpretation
+The original paper is preserved. [Technical review](docs/AUDIT.md) records parameter conventions, the fixed 250-transaction analysis cutoff, relative-error normalization and the use of contract-price quantiles in the exploratory decomposition. These definitions support precise interpretation and further research.
 
-The paper uses beta as a time constant; the code uses beta as its reciprocal rate. The error plot in the paper omits the relative-error denominator. The claimed measured E[P] decomposition is approximated in source using contract-price quantiles, not observed bid/ask histories. Read the audit before quoting these claims.
-
-Prior visualization supplied by the author: https://physics-in-economics-tki6.vercel.app/ . Its content is not certified by this review. Upstream source: https://github.com/kongruene/The-Physics-in-Economics . No new license is imposed on the upstream material.
+[Earlier author visualization](https://physics-in-economics-tki6.vercel.app/) · [Upstream source](https://github.com/kongruene/The-Physics-in-Economics). Original attribution is retained; no new license is imposed on upstream material.
