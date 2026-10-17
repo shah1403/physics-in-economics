@@ -53,3 +53,4 @@ Complete Monte Carlo before analysis. Use a fresh results/ directory when changi
 The original paper is preserved. [Technical review](docs/AUDIT.md) records parameter conventions, the fixed 250-transaction analysis cutoff, relative-error normalization and the use of contract-price quantiles in the exploratory decomposition. These definitions support precise interpretation and further research.
 
 [Earlier author visualization](https://physics-in-economics-tki6.vercel.app/) · [Upstream source](https://github.com/kongruene/The-Physics-in-Economics). Original attribution is retained; no new license is imposed on upstream material.
+

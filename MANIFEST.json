@@ -21,8 +21,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 3429,
-    "sha256": "ef698a1c56f8d96fbb939e75250f8ba6a08c3e521948e2d2e293b4259d424b23"
+    "bytes": 3054,
+    "sha256": "9aae00f59da6f53862b159dbd9afb6375dd8bce024eaae58740468c0745bceee"
   },
   {
     "path": "analyze.py",
@@ -36,8 +36,8 @@
   },
   {
     "path": "docs/AUDIT.md",
-    "bytes": 3642,
-    "sha256": "339cc7ba87bd2eac7b61b08a55124a744cf6257a1edace0dd7a79b3a9f19734f"
+    "bytes": 3632,
+    "sha256": "a927470b8dfa4e116fb99d5a6ddb8e4e17aa5c4b92e1beef9975c16e4378c413"
   },
   {
     "path": "docs/UPSTREAM.md",
@@ -56,13 +56,13 @@
   },
   {
     "path": "docs/explorer.html",
-    "bytes": 67601,
-    "sha256": "8aeb7f5a92c7dd9ea96dd49adde513b363b5bf245c4762e64211daeb436720a0"
+    "bytes": 62404,
+    "sha256": "d03467234e5b189feb790949ff0905d6693c773055c484b00a5932fb58042c5f"
   },
   {
     "path": "docs/preview.png",
-    "bytes": 112746,
-    "sha256": "21fe2b24771dc810c1cf3d4db2544cb3f04ff11e9ca9dcc835af9d5cedb3c524"
+    "bytes": 77519,
+    "sha256": "8812327275612ce063e39ae36a4eaf69ea9a441c480737e579e342fd7ae74c5d"
   },
   {
     "path": "docs/smith_replication.png",
